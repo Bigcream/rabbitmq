@@ -20,7 +20,7 @@ services:
     networks:
       - "rabbitmq-service"
   job:
-    image: "rabbitmq-job:v1.0.0"
+    image: "rabbitmq-job:v1.0.2"
     ports:
       - "8080:8080"
     labels:
@@ -29,10 +29,12 @@ services:
       - "rabbitmq-service"
     depends_on:
       - "rabbitmq"
+    container_name: "job"
     environment:
       - "SPRING_RABBITMQ_HOST=rabbitmq"
-  worker:
-    image: "rabbitmq-job:v1.0.0"
+      - "SPRING_PROFILES_ACTIVE=job"
+  worker1:
+    image: "rabbitmq-job:v1.0.2"
     ports:
       - "8081:8080"
     labels:
@@ -41,10 +43,12 @@ services:
       - "rabbitmq-service"
     depends_on:
       - "rabbitmq"
+    container_name: "worker_1"
     environment:
       - "SPRING_RABBITMQ_HOST=rabbitmq"
-  worker1:
-    image: "rabbitmq-job:v1.0.0"
+      - "SPRING_PROFILES_ACTIVE=worker"
+  worker2:
+    image: "rabbitmq-job:v1.0.2"
     ports:
       - "8082:8080"
     labels:
@@ -55,3 +59,19 @@ services:
       - "rabbitmq"
     environment:
       - "SPRING_RABBITMQ_HOST=rabbitmq"
+      - "SPRING_PROFILES_ACTIVE=worker"
+    container_name: "worker_2"
+  worker3:
+    image: "rabbitmq-job:v1.0.2"
+    ports:
+      - "8083:8080"
+    labels:
+      NAME: "worker"
+    networks:
+      - "rabbitmq-service"
+    depends_on:
+      - "rabbitmq"
+    container_name: "worker_3"
+    environment:
+      - "SPRING_RABBITMQ_HOST=rabbitmq"
+      - "SPRING_PROFILES_ACTIVE=worker"
